@@ -4,6 +4,7 @@ import Nav from './nav';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Sidenav from './sidenav';
+import { NavbarCart } from '@/components/myComponents/subs/navbar-cart';
 import { ModeToggle } from '@/components/ui/mode-toggle';
 import { Suspense } from "react"
 import {AiOutlineSearch, AiOutlineHome, AiOutlineShop, AiOutlineMan, AiOutlineContacts} from "react-icons/ai"
@@ -17,7 +18,8 @@ const Navbar = () : JSX.Element => {
             <Link href="/" className="flex shrink-0 justify-center items-center py-1">
               <Image src="/logo.png" alt="Kith and Kin International College logo" width={42} height={42} className="h-[42px] w-[42px] object-contain" />
             </Link>
-            <div className="ml-auto lg:hidden">
+            <div className="ml-auto flex items-center gap-2 lg:hidden">
+              <NavbarCart />
               <Sidenav />
             </div>
 

@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import Navbar from "@/components/navbar";
 import { AppContextProvider } from "@/context/appContext";
 import { Providers } from "@/app/providers";
+import { CartProvider } from "@/hooks/use-cart";
 
 // import {Roboto} from "next/font/google"
 
@@ -56,8 +57,10 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <Providers>
             <AppContextProvider>
-              <Navbar />
-              {children}
+              <CartProvider>
+                <Navbar />
+                {children}
+              </CartProvider>
             </AppContextProvider>
           </Providers>
         </ThemeProvider>

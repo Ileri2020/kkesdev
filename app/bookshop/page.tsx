@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, BookOpen, Backpack, GraduationCap, PencilRuler, Shirt } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { BookshopProducts } from "@/components/bookshop/bookshop-products";
 
 const categories = [
   {
@@ -33,7 +34,7 @@ export default function BookshopPage() {
   return (
     <main className="min-h-[calc(100vh-58px)] overflow-hidden bg-gradient-to-b from-accent/[0.07] via-background to-background">
       <section className="mx-auto max-w-6xl px-4 pb-14 pt-10 sm:px-6 sm:pt-16 lg:px-8">
-        <div className="relative overflow-hidden rounded-[2rem] border border-accent/15 bg-card shadow-xl shadow-accent/5">
+        {/* <div className="relative overflow-hidden rounded-[2rem] border border-accent/15 bg-card shadow-xl shadow-accent/5">
           <div aria-hidden="true" className="absolute -right-16 -top-24 h-72 w-72 rounded-full bg-accent/10 blur-3xl" />
           <div className="relative grid gap-8 px-6 py-10 sm:px-10 sm:py-14 lg:grid-cols-[1fr_auto] lg:items-center lg:px-14">
             <div className="max-w-2xl">
@@ -57,7 +58,9 @@ export default function BookshopPage() {
               <BookOpen className="h-20 w-20 text-accent sm:h-28 sm:w-28" strokeWidth={1.25} />
             </div>
           </div>
-        </div>
+        </div> */}
+
+        <BookshopProducts />
 
         <div className="mt-12 sm:mt-16">
           <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
