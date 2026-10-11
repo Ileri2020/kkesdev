@@ -18,6 +18,7 @@ import {
   SlidersHorizontal,
   X,
 } from "lucide-react";
+import { AIResponse } from "@/components/student/ai-response";
 
 type YearOption = { year: number; count: number };
 type SubjectOption = { key: string; label: string; years: YearOption[] };
@@ -413,6 +414,10 @@ export function JambPractice() {
   const [submissionError, setSubmissionError] = useState("");
   const [submission, setSubmission] = useState<JambSubmission | null>(null);
   const [submissionKey, setSubmissionKey] = useState("");
+  const [expandedExplanations, setExpandedExplanations] = useState<Record<string, boolean>>({});
+  const [explanations, setExplanations] = useState<Record<string, string>>({});
+  const [explanationErrors, setExplanationErrors] = useState<Record<string, string>>({});
+  const [loadingExplanations, setLoadingExplanations] = useState<Record<string, boolean>>({});
   const submissionInFlight = useRef(false);
 
   const [durationMinutes, setDurationMinutes] = useState(120);
@@ -597,6 +602,9 @@ export function JambPractice() {
       setFinished(false);
       setSubmission(null);
       setSubmissionError("");
+      setExpandedExplanations({});
+      setExplanations({});
+      setExplanationErrors({});
       setSubmissionKey(crypto.randomUUID());
       submissionInFlight.current = false;
       setRemainingSeconds(durationMinutes * 60);
@@ -617,6 +625,9 @@ export function JambPractice() {
     setSubmission(null);
     setSubmissionError("");
     setSubmissionKey("");
+    setExpandedExplanations({});
+    setExplanations({});
+    setExplanationErrors({});
     submissionInFlight.current = false;
     setRemainingSeconds(0);
     setPracticeError("");
@@ -652,6 +663,35 @@ export function JambPractice() {
     } finally {
       submissionInFlight.current = false;
       setIsSubmitting(false);
+    }
+  }
+
+  async function toggleExplanation(questionId: string) {
+    const opening = !expandedExplanations[questionId];
+    setExpandedExplanations((current) => ({ ...current, [questionId]: opening }));
+    if (opening) await loadExplanation(questionId);
+  }
+
+  async function loadExplanation(questionId: string) {
+    if (explanations[questionId] || loadingExplanations[questionId]) return;
+    setLoadingExplanations((current) => ({ ...current, [questionId]: true }));
+    setExplanationErrors((current) => ({ ...current, [questionId]: "" }));
+    try {
+      const response = await fetch("/api/student/ai", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "explain", questionId }),
+      });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || "Unable to load the AI explanation.");
+      setExplanations((current) => ({ ...current, [questionId]: payload.explanation }));
+    } catch (error) {
+      setExplanationErrors((current) => ({
+        ...current,
+        [questionId]: error instanceof Error ? error.message : "Unable to load the AI explanation.",
+      }));
+    } finally {
+      setLoadingExplanations((current) => ({ ...current, [questionId]: false }));
     }
   }
 
@@ -718,6 +758,32 @@ export function JambPractice() {
                     {outcome?.correctAnswer ?? "Not available"}
                   </span>
                 </p>
+                <div className="mt-4 border-t border-border/70 pt-3">
+                  <button
+                    type="button"
+                    aria-expanded={Boolean(expandedExplanations[question.id])}
+                    onClick={() => void toggleExplanation(question.id)}
+                    className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-primary transition hover:bg-primary/10"
+                  >
+                    <Sparkles size={16} />
+                    {expandedExplanations[question.id] ? "Hide AI explanation" : "Explain with AI"}
+                    <ChevronDown size={15} className={`transition-transform ${expandedExplanations[question.id] ? "rotate-180" : ""}`} />
+                  </button>
+                  {expandedExplanations[question.id] && (
+                    <div className="mt-3 rounded-xl border border-primary/15 bg-primary/[0.035] p-4">
+                      {loadingExplanations[question.id] ? (
+                        <p className="flex items-center gap-2 text-sm text-muted-foreground"><LoaderCircle size={16} className="animate-spin" /> Working through the solution step by step…</p>
+                      ) : explanations[question.id] ? (
+                        <AIResponse content={explanations[question.id]} />
+                      ) : (
+                        <div>
+                          <p role={explanationErrors[question.id] ? "alert" : undefined} className={`text-sm ${explanationErrors[question.id] ? "text-destructive" : "text-muted-foreground"}`}>{explanationErrors[question.id] || "No explanation is available yet."}</p>
+                          {explanationErrors[question.id] && <button type="button" onClick={() => void loadExplanation(question.id)} className="mt-2 text-xs font-semibold text-primary hover:underline">Try again</button>}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
               </article>
             );
           })}

@@ -35,6 +35,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# local server-only AI encryption key (never commit or deploy from Git)
+/utils/ai-secret-config.local.json
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

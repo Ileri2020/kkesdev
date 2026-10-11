@@ -128,6 +128,36 @@ model User {
   updatedAt             DateTime               @updatedAt
 }
 
+// Singleton application-level AI provider configuration. API keys are stored
+// encrypted; the encryption key is loaded server-side from the utility config.
+model AIProviderSettings {
+  id                     String   @id @map("_id")
+  provider               String   @default("gemini")
+  model                  String?
+  openRouterModel        String?
+  geminiKeyEncrypted     String?
+  openRouterKeyEncrypted String?
+  providerKeys           AIProviderKey[]
+  updatedAt              DateTime @updatedAt
+}
+
+model AIProviderKey {
+  id                String            @id @default(auto()) @map("_id") @db.ObjectId
+  settings          AIProviderSettings @relation(fields: [settingsId], references: [id])
+  settingsId        String
+  provider          String
+  encryptedKey      String
+  fingerprint       String            @unique
+  attemptCount      Int               @default(0)
+  quotaResetAt      DateTime?
+  isEnabled         Boolean           @default(true)
+  lastAttemptAt     DateTime?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  @@index([settingsId, provider, isEnabled, attemptCount])
+}
+
 model School {
   id                 String              @id @default(auto()) @map("_id") @db.ObjectId
   name               String
@@ -383,6 +413,7 @@ model Question {
   difficulty     DifficultyLevel @default(MEDIUM)
   prompt         String
   explanation    String?
+  aiExplanation  String?
   note           String?
   passage       String?
   context       String?

@@ -11,7 +11,8 @@
     "start": "next start",
     "lint": "next lint",
     "seed:session": "node -r dotenv/config scripts/seed-session.js",
-    "import:jamb:questions": "node -r dotenv/config scripts/import-jamb-questions.js"
+    "import:jamb:questions": "node -r dotenv/config scripts/import-jamb-questions.js",
+    "ai:keys:sync": "node scripts/save-ai-keys-to-db.js"
   },
   "engines": {
     "node": "24.x"

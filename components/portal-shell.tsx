@@ -115,6 +115,7 @@ export const navigation: Record<PortalRole, { label: string; href: string; icon:
     { label: "Complaints", href: "/admin/complaints", icon: MessageSquare },
     { label: "Audit Logs", href: "/admin/audit-logs", icon: FileText },
     { label: "Settings", href: "/admin/settings", icon: Settings },
+    { label: "AI Provider Keys", href: "/admin/ai-settings", icon: Sparkles },
   ],
 };
 
