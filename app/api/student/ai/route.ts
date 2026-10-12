@@ -1,27 +1,8 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/auth";
 import { requestAIText } from "@/lib/ai-provider";
 import { prisma } from "@/lib/prisma";
 
 export const runtime = "nodejs";
-
-async function getRequesterId() {
-  const session = await auth();
-  if (session?.user?.id) return session.user.id;
-  if (process.env.NODE_ENV === "production") return null;
-  const visitor = await prisma.user.upsert({
-    where: { email: "visitor@local.test" },
-    update: {},
-    create: {
-      email: "visitor@local.test",
-      name: "Development Visitor",
-      role: "VISITOR",
-      status: "ACTIVE",
-    },
-    select: { id: true },
-  });
-  return visitor.id;
-}
 
 const explanationInstructions = [
   "You are a patient tutor explaining a JAMB multiple-choice question to a secondary-school student.",
@@ -40,9 +21,6 @@ const assistantInstructions = [
 
 export async function POST(request: Request) {
   try {
-    const userId = await getRequesterId();
-    if (!userId) return NextResponse.json({ error: "Sign in to use the student AI assistant." }, { status: 401 });
-
     const body = await request.json();
     if (body.action === "explain") {
       const questionId = typeof body.questionId === "string" ? body.questionId.trim() : "";

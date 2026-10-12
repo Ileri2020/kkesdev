@@ -37,7 +37,7 @@ const Landing = () => {
 
               <Imgview imgList={imguris} imgStyle='flex md:hidden w-full h-[220px] justify-center items-center overflow-hidden rounded-[25%]' />
 
-              <div className='mt-4 flex w-screen /bg-red-600 flex-col items-stretch gap-2 mx-auto'>
+              <div className='mt-4 flex w-screen max-w-sm /bg-red-600 flex-col items-stretch gap-2 mx-auto px-5'>
                 <Link href="/enroll" className='inline-flex w-full items-center justify-center rounded-full bg-accent px-5 py-2.5 font-semibold text-background shadow-lg shadow-accent/20 transition hover:scale-[1.02]'>Enroll now</Link>
                 <Link href="/login" className='inline-flex w-full items-center justify-center rounded-full border-2 border-accent bg-background px-5 py-2.5 font-semibold text-accent transition hover:border-accent hover:bg-accent/5'>Login</Link>
               </div>
