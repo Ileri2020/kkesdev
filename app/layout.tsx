@@ -6,6 +6,7 @@ import Navbar from "@/components/navbar";
 import { AppContextProvider } from "@/context/appContext";
 import { Providers } from "@/app/providers";
 import { CartProvider } from "@/hooks/use-cart";
+import Footer from "@/components/myComponents/subs/footer";
 
 // import {Roboto} from "next/font/google"
 
@@ -60,6 +61,7 @@ export default function RootLayout({
               <CartProvider>
                 <Navbar />
                 {children}
+                <Footer />
               </CartProvider>
             </AppContextProvider>
           </Providers>

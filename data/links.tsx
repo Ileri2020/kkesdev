@@ -20,6 +20,11 @@ export default {Links : [
       path: "/bookshop",
     },
     {
+      icon: <AiOutlineProfile className="text-xl" />,
+      name: "Enroll",
+      path: "/enroll",
+    },
+    {
       icon: <BiPhone className="text-xl" />,
       name: "About", //mission, vission, facilities, etc
       path: "/about",
